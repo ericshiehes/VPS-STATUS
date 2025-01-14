@@ -22,16 +22,10 @@
 ## 快速安装
 
 使用以下命令一键安装：
+
 bash
 
-curl -fsSL https://raw.githubusercontent.com/ericshiehes/VPS-STATUS/main/online_install.sh | sudo bash
-
-
-或者：
-bash
-
-wget -O- https://raw.githubusercontent.com/ericshiehes/VPS-STATUS/main/online_install.sh | sudo bash
-
+bash <(curl -fsSL https://raw.githubusercontent.com/ericshiehes/VPS-STATUS/main/install.sh)
 
 
 ## 使用方法
