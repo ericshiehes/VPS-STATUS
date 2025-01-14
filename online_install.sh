@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-# 在线安装脚本
-
 # 设置错误处理
 set -e
 
@@ -29,21 +27,6 @@ check_system() {
         echo -e "${RED}错误: 此系统不支持systemd${NC}"
         exit 1
     fi
-    
-    # 检查必要命令
-    for cmd in curl wget grep awk sed; do
-        if ! command -v "$cmd" &> /dev/null; then
-            echo -e "${YELLOW}正在安装必要的命令: ${cmd}${NC}"
-            if command -v apt-get &> /dev/null; then
-                apt-get update && apt-get install -y "$cmd"
-            elif command -v yum &> /dev/null; then
-                yum install -y "$cmd"
-            else
-                echo -e "${RED}错误: 无法安装必要的命令${NC}"
-                exit 1
-            fi
-        fi
-    done
 }
 
 # 下载安装包
@@ -52,6 +35,7 @@ download_package() {
     local temp_dir
     temp_dir=$(mktemp -d)
     
+    # 尝试使用curl下载
     if ! curl -L "https://github.com/${GITHUB_REPO}/archive/main.tar.gz" -o "${temp_dir}/vps-monitor.tar.gz"; then
         echo -e "${YELLOW}curl下载失败，尝试使用wget...${NC}"
         if ! wget -O "${temp_dir}/vps-monitor.tar.gz" "https://github.com/${GITHUB_REPO}/archive/main.tar.gz"; then
@@ -64,7 +48,7 @@ download_package() {
                 fi
             fi
             git clone "https://github.com/${GITHUB_REPO}.git" "${temp_dir}/VPS-STATUS"
-            mv "${temp_dir}/VPS-STATUS" "$INSTALL_DIR"
+            cp -r "${temp_dir}/VPS-STATUS"/* "$INSTALL_DIR/"
         else
             tar -xzf "${temp_dir}/vps-monitor.tar.gz" -C "$temp_dir"
             mkdir -p "$INSTALL_DIR"
@@ -83,19 +67,26 @@ download_package() {
 install_monitor() {
     echo -e "${GREEN}正在安装VPS监控系统...${NC}"
     
+    # 创建必要的目录
     mkdir -p "/etc/vps-monitor"
     mkdir -p "/var/log/vps-monitor"
     
-    chmod +x "${INSTALL_DIR}/install.sh"
-    bash "${INSTALL_DIR}/install.sh"
+    # 运行安装脚本
+    cd "$INSTALL_DIR"
+    bash install.sh
 }
 
 # 主函数
 main() {
     echo -e "${GREEN}开始安装VPS监控系统 v${VERSION}${NC}"
     
+    # 检查系统
     check_system
+    
+    # 下载安装包
     download_package
+    
+    # 安装程序
     install_monitor
     
     echo -e "${GREEN}安装完成！${NC}"
