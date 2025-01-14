@@ -22,13 +22,13 @@ check_system() {
     if [[ $EUID -ne 0 ]]; then
         echo -e "${RED}错误: 此脚本必须以root用户运行${NC}"
         exit 1
-    }
+    fi
     
     # 检查系统类型
     if ! command -v systemctl &> /dev/null; then
         echo -e "${RED}错误: 此系统不支持systemd${NC}"
         exit 1
-    }
+    fi
     
     # 检查必要命令
     local required_commands=("curl" "wget" "grep" "awk" "sed")
@@ -53,15 +53,30 @@ download_package() {
     local temp_dir
     temp_dir=$(mktemp -d)
     
-    # 下载最新版本
-    curl -L "https://github.com/${GITHUB_REPO}/archive/main.tar.gz" -o "${temp_dir}/vps-monitor.tar.gz"
-    
-    # 解压
-    tar -xzf "${temp_dir}/vps-monitor.tar.gz" -C "$temp_dir"
-    
-    # 移动文件
-    mkdir -p "$INSTALL_DIR"
-    cp -r "${temp_dir}"/VPS-STATUS-main/* "$INSTALL_DIR/"
+    # 尝试使用curl下载
+    if ! curl -L "https://github.com/${GITHUB_REPO}/archive/main.tar.gz" -o "${temp_dir}/vps-monitor.tar.gz"; then
+        echo -e "${YELLOW}curl下载失败，尝试使用wget...${NC}"
+        if ! wget -O "${temp_dir}/vps-monitor.tar.gz" "https://github.com/${GITHUB_REPO}/archive/main.tar.gz"; then
+            echo -e "${YELLOW}wget下载失败，尝试使用git克隆...${NC}"
+            if ! command -v git &> /dev/null; then
+                if command -v apt-get &> /dev/null; then
+                    apt-get update && apt-get install -y git
+                elif command -v yum &> /dev/null; then
+                    yum install -y git
+                fi
+            fi
+            git clone "https://github.com/${GITHUB_REPO}.git" "${temp_dir}/VPS-STATUS"
+            mv "${temp_dir}/VPS-STATUS" "$INSTALL_DIR"
+        else
+            tar -xzf "${temp_dir}/vps-monitor.tar.gz" -C "$temp_dir"
+            mkdir -p "$INSTALL_DIR"
+            cp -r "${temp_dir}"/VPS-STATUS-main/* "$INSTALL_DIR/"
+        fi
+    else
+        tar -xzf "${temp_dir}/vps-monitor.tar.gz" -C "$temp_dir"
+        mkdir -p "$INSTALL_DIR"
+        cp -r "${temp_dir}"/VPS-STATUS-main/* "$INSTALL_DIR/"
+    fi
     
     # 清理临时文件
     rm -rf "$temp_dir"
@@ -76,10 +91,10 @@ install_monitor() {
     mkdir -p "/var/log/vps-monitor"
     
     # 设置权限
-    chmod +x "${INSTALL_DIR}/scripts/install.sh"
+    chmod +x "${INSTALL_DIR}/install.sh"
     
     # 运行安装脚本
-    bash "${INSTALL_DIR}/scripts/install.sh"
+    bash "${INSTALL_DIR}/install.sh"
 }
 
 # 主函数
