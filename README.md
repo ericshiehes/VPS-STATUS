@@ -23,12 +23,14 @@
 
 使用以下命令一键安装：
 bash
-curl -fsSL https://raw.githubusercontent.com/your_username/vps-monitor/main/online_install.sh | sudo bash
+
+curl -fsSL https://raw.githubusercontent.com/ericshiehes/VPS-STATUS/main/online_install.sh | sudo bash
 
 
 或者：
 bash
-wget -O- https://raw.githubusercontent.com/your_username/vps-monitor/main/online_install.sh | sudo bash
+
+wget -O- https://raw.githubusercontent.com/ericshiehes/VPS-STATUS/main/online_install.sh | sudo bash
 
 
 
