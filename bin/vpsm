@@ -1,0 +1,84 @@
+#!/bin/bash
+
+# 定义程序路径
+INSTALL_PATH="/usr/local/vps-monitor"
+VERSION="1.0.0"
+
+# 帮助信息
+show_help() {
+    echo "VPS监控系统 (vpsm) v${VERSION}"
+    echo
+    echo "用法: vpsm [命令]"
+    echo
+    echo "命令:"
+    echo "  status    显示监控面板"
+    echo "  start     启动监控服务"
+    echo "  stop      停止监控服务"
+    echo "  restart   重启监控服务"
+    echo "  test      测试Telegram通知"
+    echo "  update    检查并更新程序"
+    echo "  uninstall 卸载程序"
+    echo "  help      显示此帮助信息"
+    echo
+    echo "不带参数运行 vpsm 将显示监控面板"
+}
+
+# 检查root权限
+check_root() {
+    if [[ $EUID -ne 0 ]]; then
+        echo "错误: 此命令需要root权限"
+        echo "请使用 sudo vpsm $1"
+        exit 1
+    fi
+}
+
+# 主函数
+main() {
+    # 如果没有参数，默认显示状态面板
+    if [ $# -eq 0 ]; then
+        $INSTALL_PATH/src/menu.sh
+        exit 0
+    fi
+
+    case "$1" in
+        status)
+            $INSTALL_PATH/src/menu.sh
+            ;;
+        start)
+            check_root $1
+            systemctl start vps-monitor
+            echo "监控服务已启动"
+            ;;
+        stop)
+            check_root $1
+            systemctl stop vps-monitor
+            echo "监控服务已停止"
+            ;;
+        restart)
+            check_root $1
+            systemctl restart vps-monitor
+            echo "监控服务已重启"
+            ;;
+        test)
+            $INSTALL_PATH/src/telegram.sh test
+            ;;
+        update)
+            check_root $1
+            $INSTALL_PATH/src/utils.sh update
+            ;;
+        uninstall)
+            check_root $1
+            $INSTALL_PATH/src/menu.sh uninstall
+            ;;
+        help|-h|--help)
+            show_help
+            ;;
+        *)
+            echo "未知命令: $1"
+            echo "运行 'vpsm help' 查看可用命令"
+            exit 1
+            ;;
+    esac
+}
+
+main "$@" 

@@ -1,0 +1,13 @@
+vps-monitor/
+├── install.sh
+├── bin/
+│   └── vpsm
+├── src/
+│   ├── monitor.sh
+│   ├── config.sh
+│   ├── menu.sh
+│   ├── utils.sh
+│   └── telegram.sh
+├── config/
+│   └── settings.conf
+└── README.md 
