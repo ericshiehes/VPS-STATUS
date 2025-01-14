@@ -5,8 +5,10 @@
 # 设置错误处理
 set -e
 
-# 加载必要的模块
+# 获取脚本所在目录
 SCRIPT_DIR="$(dirname "$(readlink -f "$0")")"
+
+# 加载必要的模块
 source "${SCRIPT_DIR}/utils/config.sh"
 source "${SCRIPT_DIR}/utils/logger.sh"
 source "${SCRIPT_DIR}/monitor/cpu.sh"
@@ -152,25 +154,11 @@ main() {
         test)
             test_telegram_config
             ;;
-        update)
-            # TODO: 实现更新功能
-            echo "更新功能开发中"
-            ;;
-        logs)
-            get_recent_logs "$@"
-            ;;
         help|-h|--help)
             show_help
             ;;
         version|-v|--version)
             echo "v${VERSION}"
-            ;;
-        uninstall)
-            # TODO: 实现卸载功能
-            echo "卸载功能开发中"
-            ;;
-        daemon)
-            run_daemon
             ;;
         *)
             show_status
