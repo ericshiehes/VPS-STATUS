@@ -1,2 +1,18 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+
+# Shell scripts should use LF
+*.sh text eol=lf
+
+# Documentation
+*.md text
+*.txt text
+
+# Configs
+*.yml text
+*.json text
+*.conf text
+
+# Declare files that will always have LF line endings on checkout
+scripts/* text eol=lf
+src/**/*.sh text eol=lf

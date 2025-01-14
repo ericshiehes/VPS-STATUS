@@ -1,13 +1,41 @@
-vps-monitor/
-├── install.sh
-├── bin/
-│   └── vpsm
+VPS-STATUS/
+├── .github/
+│   ├── ISSUE_TEMPLATE/
+│   │   ├── bug_report.md
+│   │   └── feature_request.md
+│   └── workflows/
+│       └── ci.yml
+├── docs/
+│   ├── images/
+│   │   └── preview.png
+│   ├── configuration.md
+│   ├── development.md
+│   ├── faq.md
+│   ├── installation.md
+│   ├── troubleshooting.md
+│   └── usage.md
+├── scripts/
+│   ├── install.sh
+│   └── online_install.sh
 ├── src/
-│   ├── monitor.sh
-│   ├── config.sh
-│   ├── menu.sh
-│   ├── utils.sh
-│   └── telegram.sh
-├── config/
-│   └── settings.conf
-└── README.md 
+│   ├── monitor/
+│   │   ├── cpu.sh
+│   │   ├── memory.sh
+│   │   ├── disk.sh
+│   │   ├── network.sh
+│   │   └── ssh.sh
+│   ├── notify/
+│   │   └── telegram.sh
+│   └── utils/
+│       ├── config.sh
+│       └── logger.sh
+├── tests/
+│   └── test_monitor.sh
+├── .gitignore
+├── .gitattributes
+├── CHANGELOG.md
+├── CONTRIBUTING.md
+├── LICENSE
+├── README.md
+├── README_EN.md
+└── SECURITY.md 

@@ -1,0 +1,37 @@
+# IDE
+.vscode/*
+!.vscode/settings.json
+.idea/
+*.code-workspace
+
+# OS
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# Logs
+*.log
+logs/
+*.log.*
+
+# Runtime
+tmp/
+temp/
+*.pid
+
+# Config
+config.local.sh
+.env
+
+# Test
+coverage/
+test-results/
+
+# Build
+dist/
+build/
+
+# Dependencies
+node_modules/
+vendor/ 
